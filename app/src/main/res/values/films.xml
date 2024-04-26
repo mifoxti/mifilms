@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="films">
+        <item>Тайна 7 сестер</item>
+        <item>Механик</item>
+        <item>Зелёная книга</item>
+        <item>Барби</item>
+        <item>Интерстеллар</item>
+    </string-array>
+
+    <array name="paths">
+        <item>t7s</item>
+        <item>mch</item>
+        <item>gb</item>
+        <item>brb</item>
+        <item>intrst</item>
+
+    </array>
+</resources>

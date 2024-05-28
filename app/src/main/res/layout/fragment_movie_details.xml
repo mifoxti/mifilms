@@ -27,7 +27,7 @@
         android:layout_marginTop="20dp"
         android:ems="10"
         android:text="Фильм"
-        android:textSize="32sp"
+        android:textSize="36sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/poster"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,6 +45,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
     />
+
+    <TextView
+        android:id="@+id/filmOpisView"
+        android:layout_width="match_parent"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:ems="10"
+        android:text="Фильм"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/playButton"
+        app:layout_constraintEnd_toEndOf="parent"
+/>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

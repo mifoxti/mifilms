@@ -32,6 +32,7 @@
             app:layout_constraintTop_toBottomOf="@+id/helloTxt"
             app:layout_constraintStart_toStartOf="@+id/helloTxt"
             app:layout_constraintEnd_toEndOf="@+id/helloTxt"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 

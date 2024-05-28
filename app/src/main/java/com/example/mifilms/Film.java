@@ -4,7 +4,10 @@ public class Film {
 
     public String id, title, description, img_src, vide_src, nfk;
 
-
+    // Конструктор без аргументов
+    public Film() {
+        // Пустой конструктор необходим для Firebase
+    }
 
     // Конструктор для считывания данных из Firebase
     public Film(String id, String title, String description, String img_src, String vide_src, String nfk) {
@@ -23,7 +26,6 @@ public class Film {
         this.vide_src = vide_src;
         this.nfk = "true";
         this.description = "Описание";
-        // Добавьте остальные поля по умолчанию, если это необходимо
     }
-
 }
+

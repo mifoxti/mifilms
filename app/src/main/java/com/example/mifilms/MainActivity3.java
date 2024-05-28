@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -37,7 +38,7 @@ public class MainActivity3 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
-
+        String videoUrl = getIntent().getStringExtra("videoPath");
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         // Полноэкранный режим, скрывающий навигационную панель
@@ -78,7 +79,8 @@ public class MainActivity3 extends AppCompatActivity {
         seekBar = findViewById(R.id.seekBar);
         setupSeekBar();
 
-        String videoUrl = "https://firebasestorage.googleapis.com/v0/b/mifilms-134eb.appspot.com/o/Interstellar.mp4?alt=media&token=30bba586-292c-4527-bc61-561539b8a5c1";
+
+
         playVideo(videoUrl);
 
         btnPlayPause.setOnClickListener(new View.OnClickListener() {

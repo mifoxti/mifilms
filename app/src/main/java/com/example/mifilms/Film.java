@@ -4,6 +4,8 @@ public class Film {
 
     public String id, title, description, img_src, vide_src, nfk;
 
+
+
     // Конструктор для считывания данных из Firebase
     public Film(String id, String title, String description, String img_src, String vide_src, String nfk) {
         this.id = id;
@@ -15,9 +17,13 @@ public class Film {
     }
 
     // Конструктор для удобства создания объектов Film
-    public Film(String title, String img_src) {
+    public Film(String title, String img_src, String vide_src) {
         this.title = title;
         this.img_src = img_src;
+        this.vide_src = vide_src;
+        this.nfk = "true";
+        this.description = "Описание";
         // Добавьте остальные поля по умолчанию, если это необходимо
     }
+
 }

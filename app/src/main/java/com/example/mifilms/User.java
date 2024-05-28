@@ -22,7 +22,7 @@ public class User {
         this.usname = usname;
         this.pass = pass;
         this.adult = "1";
-        this.playlists = "Избранное;";
+        this.playlists = "";
         this.subus = "None";
     }
 

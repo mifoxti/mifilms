@@ -37,14 +37,14 @@ public class MainActivity2 extends AppCompatActivity {
         transaction.commit();
 
 
-        ExtendedFloatingActionButton extendedFab = findViewById(R.id.extended_fab);
-        extendedFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ModalBottomSheet modalBottomSheet = new ModalBottomSheet();
-                modalBottomSheet.show(getSupportFragmentManager(), ModalBottomSheet.TAG);
-            }
-        });
+//        ExtendedFloatingActionButton extendedFab = findViewById(R.id.extended_fab);
+//        extendedFab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ModalBottomSheet modalBottomSheet = new ModalBottomSheet();
+//                modalBottomSheet.show(getSupportFragmentManager(), ModalBottomSheet.TAG);
+//            }
+//        });
 
         if (fragment != null) {
             // Устанавливаем обработчик нажатия на кнопку в фрагменте

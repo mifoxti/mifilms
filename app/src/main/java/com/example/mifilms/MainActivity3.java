@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.VideoView;
@@ -35,6 +37,36 @@ public class MainActivity3 extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         EdgeToEdge.enable(this);
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        // Полноэкранный режим, скрывающий навигационную панель
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        // Дополнительно скрываем навигационную панель
+        final View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        decorView.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
+            @Override
+            public void onSystemUiVisibilityChange(int visibility) {
+                if ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0) {
+                    decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+                }
+            }
+        });
+
         setContentView(R.layout.activity_main3);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
@@ -46,7 +78,7 @@ public class MainActivity3 extends AppCompatActivity {
         seekBar = findViewById(R.id.seekBar);
         setupSeekBar();
 
-        String videoUrl = "https://firebasestorage.googleapis.com/v0/b/mifilms-134eb.appspot.com/o/woah.mp4?alt=media&token=337fdcf6-4a61-4cef-b94f-8f417744444c";
+        String videoUrl = "https://firebasestorage.googleapis.com/v0/b/mifilms-134eb.appspot.com/o/Interstellar.mp4?alt=media&token=30bba586-292c-4527-bc61-561539b8a5c1";
         playVideo(videoUrl);
 
         btnPlayPause.setOnClickListener(new View.OnClickListener() {
@@ -134,10 +166,7 @@ public class MainActivity3 extends AppCompatActivity {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser) {
-                    if (videoView != null && duration != 0) {
-                        int newPosition = (progress * duration) / 100;
-                        videoView.seekTo(newPosition);
-                    }
+                    videoView.seekTo(progress);
                 }
             }
 
@@ -152,10 +181,10 @@ public class MainActivity3 extends AppCompatActivity {
                 if (videoView != null && duration != 0) {
                     int progress = seekBar.getProgress();
                     int newPosition = (progress * duration) / 100;
-                    // Проверяем, не находится ли текущая позиция на конце видео
-                    if (newPosition != duration) {
-                        videoView.seekTo(newPosition);
-                    }
+//                    // Проверяем, не находится ли текущая позиция на конце видео
+//                    if (newPosition != duration) {
+//                        videoView.seekTo(newPosition);
+//                    }
                 }
             }
         });

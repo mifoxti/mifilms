@@ -27,5 +27,21 @@ public class Film {
         this.nfk = "true";
         this.description = "Описание";
     }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getImg_src() {
+        return img_src;
+    }
+
+    public String getVide_src() {
+        return vide_src;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }
 

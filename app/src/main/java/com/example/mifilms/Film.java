@@ -43,5 +43,9 @@ public class Film {
     public String getDescription() {
         return description;
     }
+
+    public boolean isNfk() {
+        return Boolean.parseBoolean(nfk);
+    }
 }
 

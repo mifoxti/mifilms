@@ -1,5 +1,7 @@
 package com.example.mifilms;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,12 +28,15 @@ import java.util.List;
 public class MainScreen extends Fragment {
 
     private static final String TAG = "MainScreen";
+    private static final String PREFS_NAME = "MyPrefs";
+    private static final String KIDS_MODE_KEY = "kids_mode";
 
     private RecyclerView filmsRecyclerView;
     private FilmAdapter filmAdapter;
     private List<Film> filmsList;
     private HashMap<String, Film> filmsMap;
     private DatabaseReference mDatabase;
+    private boolean isKidsModeEnabled;
 
     public MainScreen() {
         // Required empty public constructor
@@ -51,6 +56,10 @@ public class MainScreen extends Fragment {
         mDatabase = FirebaseDatabase.getInstance().getReference("films");
         filmsList = new ArrayList<>();
         filmsMap = new HashMap<>();
+
+        // Load kids mode state
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        isKidsModeEnabled = sharedPreferences.getBoolean(KIDS_MODE_KEY, false);
     }
 
     @Override
@@ -60,11 +69,9 @@ public class MainScreen extends Fragment {
         filmsRecyclerView = rootView.findViewById(R.id.my_recycler_view);
         filmsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Создание адаптера с использованием списка фильмов filmsList и обработчика нажатий listener
         filmAdapter = new FilmAdapter(filmsList, getContext(), new FilmAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Film film) {
-                // Handle item click
                 Intent intent = new Intent(getActivity(), MainActivity2.class);
                 intent.putExtra("filmName", film.getTitle());
                 intent.putExtra("imgPath", film.getImg_src());
@@ -75,7 +82,6 @@ public class MainScreen extends Fragment {
         });
         filmsRecyclerView.setAdapter(filmAdapter);
 
-        // Загрузка данных из Firebase Realtime Database
         loadFilmsFromDatabase();
 
         return rootView;
@@ -90,7 +96,7 @@ public class MainScreen extends Fragment {
 
                 for (DataSnapshot filmSnapshot : dataSnapshot.getChildren()) {
                     Film film = filmSnapshot.getValue(Film.class);
-                    if (film != null) {
+                    if (film != null && (!isKidsModeEnabled || !film.isNfk())) {
                         filmsList.add(film);
                         filmsMap.put(film.getTitle(), film);
                     }
@@ -104,5 +110,10 @@ public class MainScreen extends Fragment {
                 Log.e(TAG, "Failed to load films from database", databaseError.toException());
             }
         });
+    }
+
+    public void setKidsModeEnabled(boolean enabled) {
+        isKidsModeEnabled = enabled;
+        loadFilmsFromDatabase();
     }
 }

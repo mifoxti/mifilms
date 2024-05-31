@@ -13,8 +13,7 @@
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="40dp"
+        android:layout_marginTop="40dp"
         />
 
 </FrameLayout>

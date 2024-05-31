@@ -2,9 +2,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragmentMovie"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/fragmentMovie"
     android:background="@color/md_theme_surface"
     tools:context=".MovieDetailsFragment">
 
@@ -12,13 +12,13 @@
         android:id="@+id/poster"
         android:layout_width="match_parent"
         android:layout_height="400dp"
+        android:adjustViewBounds="true"
+        android:alpha="1.0"
+        android:scaleType="centerCrop"
+        android:src="@drawable/t7s"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:scaleType="centerCrop"
-        android:adjustViewBounds="true"
-        android:src="@drawable/t7s"
-        android:alpha="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/filmNameView"
@@ -27,40 +27,59 @@
         android:layout_marginTop="20dp"
         android:ems="10"
         android:text="Фильм"
+        android:textAlignment="center"
         android:textSize="36sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/poster"
         app:layout_constraintEnd_toEndOf="parent"
-        android:textAlignment="center"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/poster" />
 
     <Button
-        style="@style/Widget.Material3.Button.ElevatedButton.Icon"
         android:id="@+id/playButton"
+        style="@style/Widget.Material3.Button.ElevatedButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:icon="@drawable/ic_play"
+        android:layout_marginTop="20dp"
         android:text="Смотреть"
+        app:icon="@drawable/ic_play"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/filmNameView" />
+
+    <Button
+        style="?attr/materialIconButtonOutlinedStyle"
         app:layout_constraintTop_toBottomOf="@+id/filmNameView"
         android:layout_marginTop="20dp"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-    />
-
-    <TextView
-        android:id="@+id/filmOpisView"
-        android:layout_width="match_parent"
-        android:layout_marginStart="12dp"
+        app:layout_constraintStart_toEndOf="@id/playButton"
         android:layout_marginEnd="12dp"
+        android:id="@+id/galleryBtnLove"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:ems="10"
-        android:text="Фильм"
-        android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/playButton"
-        app:layout_constraintEnd_toEndOf="parent"
-/>
+        app:icon="@drawable/ic_heart"
+        />
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/playButton">
+
+        <TextView
+            android:id="@+id/filmOpisView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:text="Фильм"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

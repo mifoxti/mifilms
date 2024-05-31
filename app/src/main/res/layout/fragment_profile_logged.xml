@@ -21,6 +21,16 @@
             android:layout_marginBottom="80dp"
             android:layout_marginStart="16dp"
             />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Детский режим"
+            android:id="@+id/kidsmode"
+            app:layout_constraintTop_toBottomOf="@id/helloTxt"
+            app:layout_constraintStart_toStartOf="@id/helloTxt"
+            app:layout_constraintEnd_toEndOf="@id/helloTxt"/>
+
         <Button
             android:id="@+id/logoutBtn"
             style="@style/Widget.Material3.Button.ElevatedButton"
@@ -29,9 +39,9 @@
             android:layout_marginBottom="280dp"
             android:layout_marginTop="16dp"
             android:text="LogOut"
-            app:layout_constraintTop_toBottomOf="@+id/helloTxt"
-            app:layout_constraintStart_toStartOf="@+id/helloTxt"
-            app:layout_constraintEnd_toEndOf="@+id/helloTxt"/>
+            app:layout_constraintTop_toBottomOf="@id/kidsmode"
+            app:layout_constraintStart_toStartOf="@id/kidsmode"
+            app:layout_constraintEnd_toEndOf="@id/kidsmode"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

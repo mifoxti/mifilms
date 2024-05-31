@@ -1,9 +1,13 @@
 package com.example.mifilms;
+
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,6 +18,8 @@ import com.google.firebase.auth.FirebaseAuth;
 public class ProfileLogged extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String PREFS_NAME = "MyPrefs";
+    private static final String KIDS_MODE_KEY = "kids_mode";
 
     private String mParam1;
     private String mParam2;
@@ -50,16 +56,33 @@ public class ProfileLogged extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Button logoutBtn = view.findViewById(R.id.logoutBtn);
+        CheckBox kidsModeCheckBox = view.findViewById(R.id.kidsmode);
+
+        // Load saved state
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        boolean isKidsModeEnabled = sharedPreferences.getBoolean(KIDS_MODE_KEY, false);
+        kidsModeCheckBox.setChecked(isKidsModeEnabled);
 
         logoutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mAuth.signOut();
-                // Переход обратно к экрану входа/регистрации
                 Fragment fragment = new Profile();
                 requireActivity().getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, fragment)
                         .commit();
+            }
+        });
+
+        kidsModeCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            // Save state
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(KIDS_MODE_KEY, isChecked);
+            editor.apply();
+
+            Fragment mainScreenFragment = getParentFragmentManager().findFragmentByTag("mainScreen");
+            if (mainScreenFragment instanceof MainScreen) {
+                ((MainScreen) mainScreenFragment).setKidsModeEnabled(isChecked);
             }
         });
     }

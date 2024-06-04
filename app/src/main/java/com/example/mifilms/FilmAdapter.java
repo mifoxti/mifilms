@@ -1,6 +1,7 @@
 package com.example.mifilms;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +35,6 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         this.context = context;
         this.listener = listener;
 
-        // Initialize Firebase references
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
@@ -58,13 +58,17 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         Film film = films.get(position);
         holder.bind(film, listener);
 
-        // Установка состояния кнопки "Любимое" на основе сохраненного состояния
         holder.updateLoveButtonIcon();
     }
 
     @Override
     public int getItemCount() {
         return films.size();
+    }
+
+    public void setFilms(List<Film> films) {
+        this.films = films;
+        notifyDataSetChanged();
     }
 
     public interface OnItemClickListener {
@@ -98,7 +102,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
                 loveButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Snackbar.make(itemView,  "Пожалуйста, войдите в аккаунт, чтобы добавлять фильмы в \"Любимое\"", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(itemView, "Пожалуйста, войдите в аккаунт, чтобы добавлять фильмы в \"Любимое\"", Snackbar.LENGTH_LONG).show();
                     }
                 });
             }
@@ -117,38 +121,27 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
                 }
             });
 
-            // Load the initial state of the love button (for example, check if the film is already in the favorites list)
             if (currentUser != null) {
                 loadLoveButtonState(film);
             }
         }
 
         private void loadLoveButtonState(Film film) {
-            // Assuming that there's a method in your Film class to check if it's a favorite
             isLoved = isFilmFavorite(film);
             updateLoveButtonIcon();
         }
 
         private void updateLoveButtonIcon() {
             // Update the button's icon based on the current state
-            // Uncomment and modify this code according to your icon requirements
-//            if (isLoved) {
-//                loveButton.setBackgroundResource(R.drawable.ic_heart_filled);
-//            } else {
-//                loveButton.setBackgroundResource(R.drawable.ic_heart);
-//            }
-
+            // You can customize the icons used here
         }
 
         private boolean isFilmFavorite(Film film) {
-            // Implement this method to check if the film is in the user's favorites list
-            // You can use SharedPreferences or a database query to determine this
             SharedPreferences sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-            return sharedPreferences.getBoolean(film.getTitle(), false);
+            return sharedPreferences.getBoolean("isFavorite_" + film.getTitle(), false);
         }
 
         private void handleLoveButtonClick(Film film) {
-            // Update user's favorite list in Firebase
             if (isLoved) {
                 addToFavorites(film);
             } else {
@@ -157,23 +150,19 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         }
 
         private void addToFavorites(Film film) {
-            // Implement the logic to add the film to the user's favorites in Firebase
-            userDatabase.child(film.getTitle()).setValue(true);
-            // Save the state in SharedPreferences
             SharedPreferences sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(film.getTitle(), true);
+            editor.putBoolean("isFavorite_" + film.getTitle(), true);
             editor.apply();
+            // Add any additional actions to save to Firebase or elsewhere
         }
 
         private void removeFromFavorites(Film film) {
-            // Implement the logic to remove the film from the user's favorites in Firebase
-            userDatabase.child(film.getTitle()).removeValue();
-            // Save the state in SharedPreferences
             SharedPreferences sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putBoolean(film.getTitle(), false);
+            editor.putBoolean("isFavorite_" + film.getTitle(), false);
             editor.apply();
+            // Add any additional actions to remove from Firebase or elsewhere
         }
     }
 }

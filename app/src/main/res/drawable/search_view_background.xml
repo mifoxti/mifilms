@@ -1,0 +1,6 @@
+<!-- res/drawable/search_view_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@color/md_theme_secondaryContainer"/>
+    <corners android:radius="8dp"/>
+</shape>

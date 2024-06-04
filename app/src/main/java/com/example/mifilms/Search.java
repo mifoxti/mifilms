@@ -1,6 +1,8 @@
 package com.example.mifilms;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +26,16 @@ import java.util.List;
 
 public class Search extends Fragment {
 
+    private static final String PREFS_NAME = "MyPrefs";
+    private static final String KIDS_MODE_KEY = "kids_mode";
+
     private SearchView searchView;
     private RecyclerView searchResultsRecyclerView;
     private FilmAdapter filmAdapter;
     private List<Film> allFilms;
     private List<Film> filteredFilms;
     private boolean isChildModeEnabled;
+    private DatabaseReference mDatabase;
 
     public Search() {
         // Required empty public constructor
@@ -60,6 +66,12 @@ public class Search extends Fragment {
         searchResultsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         searchResultsRecyclerView.setAdapter(filmAdapter);
 
+        // Load kids mode state
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        isChildModeEnabled = sharedPreferences.getBoolean(KIDS_MODE_KEY, false);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference("films");
+
         loadFilmsFromFirebase();
 
         setupSearch();
@@ -84,14 +96,15 @@ public class Search extends Fragment {
     }
 
     private void loadFilmsFromFirebase() {
-        DatabaseReference filmsRef = FirebaseDatabase.getInstance().getReference("films");
-        filmsRef.addValueEventListener(new ValueEventListener() {
+        mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 allFilms.clear();
                 for (DataSnapshot filmSnapshot : snapshot.getChildren()) {
                     Film film = filmSnapshot.getValue(Film.class);
-                    allFilms.add(film);
+                    if (film != null && (!isChildModeEnabled || !film.isNfk())) {
+                        allFilms.add(film);
+                    }
                 }
                 filterFilms(searchView.getQuery().toString());
             }
@@ -112,10 +125,7 @@ public class Search extends Fragment {
 
         for (Film film : allFilms) {
             if (film.getTitle().toLowerCase().contains(query.toLowerCase())) {
-                // Проверка на детский режим
-                if (!isChildModeEnabled || film.isNfk()) {
-                    filteredFilms.add(film);
-                }
+                filteredFilms.add(film);
             }
         }
         filmAdapter.notifyDataSetChanged();
@@ -123,6 +133,6 @@ public class Search extends Fragment {
 
     public void setChildModeEnabled(boolean enabled) {
         isChildModeEnabled = enabled;
-        filterFilms(searchView.getQuery().toString());
+        loadFilmsFromFirebase();
     }
 }

@@ -3,6 +3,7 @@ package com.example.mifilms;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,9 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -56,9 +59,10 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Film film = films.get(position);
-        holder.bind(film, listener);
 
-        holder.updateLoveButtonIcon();
+        holder.bind(film, listener, holder.itemView);
+
+        holder.updateLoveButtonIcon(holder.itemView);
     }
 
     @Override
@@ -94,7 +98,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
                     @Override
                     public void onClick(View v) {
                         isLoved = !isLoved;
-                        updateLoveButtonIcon();
+                        updateLoveButtonIcon(itemView);
                         handleLoveButtonClick(films.get(getAdapterPosition()));
                     }
                 });
@@ -108,7 +112,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
             }
         }
 
-        public void bind(final Film film, final OnItemClickListener listener) {
+        public void bind(final Film film, final OnItemClickListener listener, View itemView) {
             filmNameTextView.setText(film.getTitle());
             Glide.with(context)
                     .load(film.getImg_src())
@@ -128,12 +132,20 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
 
         private void loadLoveButtonState(Film film) {
             isLoved = isFilmFavorite(film);
-            updateLoveButtonIcon();
+            updateLoveButtonIcon(itemView);
         }
 
-        private void updateLoveButtonIcon() {
-            // Update the button's icon based on the current state
-            // You can customize the icons used here
+        private void updateLoveButtonIcon(View itemView) {
+            MaterialButton button = itemView.findViewById(R.id.galleryBtnLove);
+            if (isLoved) {
+
+                Drawable icon = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_heart_filled);
+                button.setIcon(icon);
+            } else {
+                Drawable icon = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_heart);
+                button.setIcon(icon);
+            }
+
         }
 
         private boolean isFilmFavorite(Film film) {
@@ -150,19 +162,23 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         }
 
         private void addToFavorites(Film film) {
+            // Добавляем фильм в плейлист пользователя
+            userDatabase.child(film.getTitle()).setValue(film);
+            // Записываем информацию о лайке в локальное хранилище
             SharedPreferences sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("isFavorite_" + film.getTitle(), true);
             editor.apply();
-            // Add any additional actions to save to Firebase or elsewhere
         }
 
         private void removeFromFavorites(Film film) {
+            // Удаляем фильм из плейлиста пользователя
+            userDatabase.child(film.getTitle()).removeValue();
+            // Удаляем информацию о лайке из локального хранилища
             SharedPreferences sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("isFavorite_" + film.getTitle(), false);
             editor.apply();
-            // Add any additional actions to remove from Firebase or elsewhere
         }
     }
 }

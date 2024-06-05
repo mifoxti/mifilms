@@ -1,5 +1,7 @@
 package com.example.mifilms;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -23,11 +25,18 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class MovieDetailsFragment extends Fragment {
 
@@ -41,6 +50,11 @@ public class MovieDetailsFragment extends Fragment {
     private ImageView imageView;
     private TextView filmNameView;
     private TextView filmOpisView;
+    private MaterialButton loveButton;
+    private boolean isLoved;
+    private DatabaseReference userDatabase;
+    private String userId;
+    private FirebaseUser currentUser;
 
     private Bitmap gradientBitmap;
 
@@ -52,6 +66,14 @@ public class MovieDetailsFragment extends Fragment {
         imageView = view.findViewById(R.id.poster);
         filmNameView = view.findViewById(R.id.filmNameView);
         filmOpisView = view.findViewById(R.id.filmOpisView);
+        loveButton = view.findViewById(R.id.galleryBtnLove);
+
+        // Получаем текущего пользователя
+        currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            userId = currentUser.getUid();
+            userDatabase = FirebaseDatabase.getInstance().getReference("User").child(userId).child("playlists");
+        }
 
         // Получаем данные о фильме
         Bundle bundle = getArguments();
@@ -81,18 +103,33 @@ public class MovieDetailsFragment extends Fragment {
                                 int color = colorDrawable.getColor();
                                 gradientBitmap = addGradient(resource, color);
                                 imageView.setImageBitmap(gradientBitmap);
-
                             }
 
                             @Override
                             public void onLoadCleared(@Nullable Drawable placeholder) {
                                 // Implement if needed
                             }
-
                         });
 
                 filmNameView.setText(filmName);
                 filmOpisView.setText(filmDesr);
+
+                if (currentUser != null) {
+                    loadLoveButtonState(filmName);
+                }
+
+                loveButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (currentUser != null) {
+                            isLoved = !isLoved;
+                            updateLoveButtonIcon();
+                            handleLoveButtonClick(new Film(filmName, imgPath, filmDesr));  // Assuming NFK value is false
+                        } else {
+                            Snackbar.make(view, "Пожалуйста, войдите в аккаунт, чтобы добавлять фильмы в \"Любимое\"", Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+                });
             } else {
                 Log.e(TAG, "filmName or imgPath is null");
             }
@@ -135,5 +172,45 @@ public class MovieDetailsFragment extends Fragment {
         canvas.drawRect(0, 0, w, h, paint);
 
         return result;
+    }
+
+    private void loadLoveButtonState(String filmName) {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        isLoved = sharedPreferences.getBoolean("isFavorite_" + filmName, false);
+        updateLoveButtonIcon();
+    }
+
+    private void updateLoveButtonIcon() {
+        if (isLoved) {
+            Drawable icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_heart_filled);
+            loveButton.setIcon(icon);
+        } else {
+            Drawable icon = ContextCompat.getDrawable(getContext(), R.drawable.ic_heart);
+            loveButton.setIcon(icon);
+        }
+    }
+
+    private void handleLoveButtonClick(Film film) {
+        if (isLoved) {
+            addToFavorites(film);
+        } else {
+            removeFromFavorites(film);
+        }
+    }
+
+    private void addToFavorites(Film film) {
+        userDatabase.child(film.getTitle()).setValue(film);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isFavorite_" + film.getTitle(), true);
+        editor.apply();
+    }
+
+    private void removeFromFavorites(Film film) {
+        userDatabase.child(film.getTitle()).removeValue();
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isFavorite_" + film.getTitle(), false);
+        editor.apply();
     }
 }

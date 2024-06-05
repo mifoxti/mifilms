@@ -45,18 +45,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/filmNameView" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/galleryBtnLove"
         style="?attr/materialIconButtonOutlinedStyle"
         app:layout_constraintTop_toBottomOf="@+id/filmNameView"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/playButton"
         android:layout_marginEnd="12dp"
-        android:id="@+id/galleryBtnLove"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:icon="@drawable/ic_heart"
-        />
+        app:icon="@drawable/ic_heart" />
 
     <ScrollView
         android:layout_width="match_parent"

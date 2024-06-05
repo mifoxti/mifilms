@@ -6,8 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".Profile">
 
-    <!-- TODO: Update blank fragment layout -->
-
+    <!-- Login field -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/loginField"
         android:layout_width="300dp"
@@ -25,6 +24,7 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Password field -->
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/passwordField"
         android:layout_width="300dp"
@@ -39,10 +39,12 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
+    <!-- Register button -->
     <Button
         android:id="@+id/registerButton"
         style="@style/Widget.Material3.Button.ElevatedButton"
@@ -54,6 +56,7 @@
         app:layout_constraintStart_toStartOf="@+id/passwordField"
         app:layout_constraintTop_toBottomOf="@+id/passwordField" />
 
+    <!-- Log in button -->
     <Button
         android:id="@+id/loginButton"
         style="@style/Widget.Material3.Button.ElevatedButton"
@@ -64,4 +67,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/passwordField"
         app:layout_constraintTop_toBottomOf="@+id/passwordField" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

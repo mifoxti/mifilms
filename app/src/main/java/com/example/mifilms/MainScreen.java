@@ -147,4 +147,18 @@ public class MainScreen extends Fragment {
         isKidsModeEnabled = enabled;
         loadFilmsFromDatabase();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateLikes();
+    }
+
+    private void updateLikes() {
+        SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+        for (Film film : filmsList) {
+            boolean isFavorite = sharedPreferences.getBoolean("isFavorite_" + film.getTitle(), false);
+        }
+        filmAdapter.notifyDataSetChanged();
+    }
 }

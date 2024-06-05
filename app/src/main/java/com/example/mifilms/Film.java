@@ -19,6 +19,7 @@ public class Film {
         this.nfk = nfk;
     }
 
+
     // Конструктор для удобства создания объектов Film
     public Film(String title, String img_src, String vide_src) {
         this.title = title;

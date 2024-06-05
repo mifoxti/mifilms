@@ -1,6 +1,7 @@
 package com.example.mifilms;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,12 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class ProfileLogged extends Fragment {
     private static final String ARG_PARAM1 = "param1";
@@ -25,6 +28,7 @@ public class ProfileLogged extends Fragment {
     private String mParam2;
 
     private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
 
     public ProfileLogged() {}
 
@@ -45,6 +49,7 @@ public class ProfileLogged extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
         mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
     }
 
     @Override
@@ -57,6 +62,13 @@ public class ProfileLogged extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Button logoutBtn = view.findViewById(R.id.logoutBtn);
         CheckBox kidsModeCheckBox = view.findViewById(R.id.kidsmode);
+        Button showFavoritesBtn = view.findViewById(R.id.showFavoritesBtn);
+        TextView helloTxt = view.findViewById(R.id.helloTxt);
+
+        // Set welcome text
+        if (mUser != null) {
+            helloTxt.setText("Здравствуйте, " + mUser.getEmail());
+        }
 
         // Load saved state
         SharedPreferences sharedPreferences = requireActivity().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
@@ -83,6 +95,16 @@ public class ProfileLogged extends Fragment {
             Fragment mainScreenFragment = getParentFragmentManager().findFragmentByTag("mainScreen");
             if (mainScreenFragment instanceof MainScreen) {
                 ((MainScreen) mainScreenFragment).setKidsModeEnabled(isChecked);
+            }
+        });
+
+        showFavoritesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new FavoritesFragment();
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
             }
         });
     }

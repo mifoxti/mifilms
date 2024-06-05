@@ -9,6 +9,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -19,8 +20,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="80dp"
-            android:layout_marginStart="16dp"
-            />
+            android:layout_marginStart="16dp" />
 
         <CheckBox
             android:layout_width="wrap_content"
@@ -29,7 +29,7 @@
             android:id="@+id/kidsmode"
             app:layout_constraintTop_toBottomOf="@id/helloTxt"
             app:layout_constraintStart_toStartOf="@id/helloTxt"
-            app:layout_constraintEnd_toEndOf="@id/helloTxt"/>
+            app:layout_constraintEnd_toEndOf="@id/helloTxt" />
 
         <Button
             android:id="@+id/logoutBtn"
@@ -38,12 +38,21 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="280dp"
             android:layout_marginTop="16dp"
-            android:text="LogOut"
+            android:text="Выйти из профиля"
             app:layout_constraintTop_toBottomOf="@id/kidsmode"
             app:layout_constraintStart_toStartOf="@id/kidsmode"
-            app:layout_constraintEnd_toEndOf="@id/kidsmode"/>
+            app:layout_constraintEnd_toEndOf="@id/kidsmode" />
+
+        <Button
+            android:id="@+id/showFavoritesBtn"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Мои любимые фильмы"
+            app:layout_constraintTop_toBottomOf="@id/logoutBtn"
+            app:layout_constraintStart_toStartOf="@id/logoutBtn"
+            app:layout_constraintEnd_toEndOf="@id/logoutBtn" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </FrameLayout>

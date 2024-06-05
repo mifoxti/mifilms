@@ -48,5 +48,13 @@ public class Film {
     public boolean isNfk() {
         return Boolean.parseBoolean(nfk);
     }
+
+    public void setTitle(String filmName) {
+        this.title = filmName;
+    }
+
+    public void setImg_src(String filmImagePath) {
+        this.img_src = filmImagePath;
+    }
 }
 

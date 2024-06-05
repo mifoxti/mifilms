@@ -203,6 +203,8 @@ public class MovieDetailsFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("isFavorite_" + film.getTitle(), true);
+        editor.putString(film.getTitle() + "_name", film.getTitle()); // Сохраняем название фильма
+        editor.putString(film.getTitle() + "_imagePath", film.getImg_src()); // Сохраняем путь к изображению
         editor.apply();
     }
 
@@ -211,6 +213,8 @@ public class MovieDetailsFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean("isFavorite_" + film.getTitle(), false);
+        editor.remove(film.getTitle() + "_name"); // Удаляем сохраненное название фильма
+        editor.remove(film.getTitle() + "_imagePath"); // Удаляем сохраненный путь к изображению
         editor.apply();
     }
 }

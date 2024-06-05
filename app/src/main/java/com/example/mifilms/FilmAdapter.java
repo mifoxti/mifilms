@@ -1,7 +1,6 @@
 package com.example.mifilms;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
@@ -10,11 +9,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -22,7 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
+import java.util.ArrayList;
 import java.util.List;
 
 public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
@@ -34,7 +31,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
     private String userId;
 
     public FilmAdapter(List<Film> films, Context context, OnItemClickListener listener) {
-        this.films = films;
+        this.films = films != null ? films : new ArrayList<Film>();  // Проверка на null
         this.context = context;
         this.listener = listener;
 
@@ -43,9 +40,6 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         if (currentUser != null) {
             userId = currentUser.getUid();
             userDatabase = FirebaseDatabase.getInstance().getReference("User").child(userId).child("playlists");
-        } else {
-            // Handle the case when the current user is null (e.g., not authenticated)
-            // You can add your custom logic here
         }
     }
 
@@ -71,7 +65,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
     }
 
     public void setFilms(List<Film> films) {
-        this.films = films;
+        this.films = films != null ? films : new ArrayList<Film>();  // Проверка на null
         notifyDataSetChanged();
     }
 
@@ -138,14 +132,12 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         private void updateLoveButtonIcon(View itemView) {
             MaterialButton button = itemView.findViewById(R.id.galleryBtnLove);
             if (isLoved) {
-
                 Drawable icon = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_heart_filled);
                 button.setIcon(icon);
             } else {
                 Drawable icon = ContextCompat.getDrawable(itemView.getContext(), R.drawable.ic_heart);
                 button.setIcon(icon);
             }
-
         }
 
         private boolean isFilmFavorite(Film film) {
@@ -164,20 +156,26 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         private void addToFavorites(Film film) {
             // Добавляем фильм в плейлист пользователя
             userDatabase.child(film.getTitle()).setValue(film);
+
             // Записываем информацию о лайке в локальное хранилище
             SharedPreferences sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("isFavorite_" + film.getTitle(), true);
+            editor.putString(film.getTitle() + "_name", film.getTitle()); // Сохраняем название фильма
+            editor.putString(film.getTitle() + "_imagePath", film.getImg_src()); // Сохраняем путь к изображению
             editor.apply();
         }
 
         private void removeFromFavorites(Film film) {
             // Удаляем фильм из плейлиста пользователя
             userDatabase.child(film.getTitle()).removeValue();
+
             // Удаляем информацию о лайке из локального хранилища
             SharedPreferences sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.putBoolean("isFavorite_" + film.getTitle(), false);
+            editor.remove(film.getTitle() + "_name"); // Удаляем сохраненное название фильма
+            editor.remove(film.getTitle() + "_imagePath"); // Удаляем сохраненный путь к изображению
             editor.apply();
         }
     }
